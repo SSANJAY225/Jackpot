@@ -1,0 +1,50 @@
+.modal{
+    position:fixed;
+    top:0;
+    left:0;
+    background-color: rgba(0,0,0,0.4);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.form{
+    background-color: #fff;
+    max-width: 200px;
+    /* min-width: 250px; */
+    width:100%;
+    border-radius: 0.4rem;
+    box-shadow: 0px 1px 10px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+.form{
+    flex: 1;
+    padding: 1rem;
+}
+.title{
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
+}
+.footer{
+    display: flex;
+    padding-top: 1rem;
+    border-top: 1px solid #ccc;
+    justify-content: flex-end;
+}
+.close{
+    position: absolute;
+    font-size: 2rem;
+    top:0.2rem;
+    right:1rem;
+    cursor: pointer;
+}
+.content{
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+}
