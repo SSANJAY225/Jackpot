@@ -17,6 +17,7 @@ const AddData = ({ close, addInvoiceData, editData }) => {
     const [DiscountAmt, setDiscountAmt] = useState(0);
     const [Paymentmeth,setPaymentmeth]=useState();
     const [PhNo,setPhNo]=useState();
+    const [TotalCount,setTotalCount]=useState();
     useEffect(() => {
         if (editData) {
             setPayeeName(editData.PayeeName);
@@ -57,6 +58,7 @@ const AddData = ({ close, addInvoiceData, editData }) => {
         const discountedTotal = calculatedTotal - (calculatedTotal * Discount / 100);
         setTotalAmount(calculatedTotal);
         setDiscountAmt(discountedTotal);
+        setTotalCount(calculatedTotal)
     }, [ListOfQty, ListOfPrice, Discount]);
 
     const handleAddItem = () => {
