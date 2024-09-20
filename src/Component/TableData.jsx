@@ -19,7 +19,7 @@ const TableData = (props) => {
     };
 
     const handlePrint = (invoice) => {
-        const printWindow = window.open('', '', 'width=300');
+        const printWindow = window.open('', '', 'width=58','height');
         const { ListOfItem, ListOfPrice, ListOfQty } = invoice;
         
         // Sum of ListOfQty
@@ -51,20 +51,44 @@ const TableData = (props) => {
                         padding: 10px;
                         text-align: left;
                     }
+                    @media print {
+        @page {
+            size: 58mm auto;
+            margin: 0;
+            orientation: portrait;
+        }
+
+        body {
+            margin: 0; /* Ensure there's no margin for the body */
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+    }
                 </style>
             </head>
             <body>
-                <h2>Invoice Number: ${invoice.invoiceNumber}</h2>
+                <h6>Jackpot T-shirt</h6>
+                <p>Invoice Number: ${invoice.invoiceNumber}</p>
                 <p>Payee Name: ${invoice.PayeeName}</p>
                 <p>Phone Number: ${invoice.PhNo}</p>
                 <p>Payment Method: ${invoice.Paymentmeth}<p/>
                 <p>Date: ${invoice.date}</p>
-                <p>Payment Status: ${invoice.payment ? "Paid" : "Yet to pay"}</p>
-                <p>Total Amount: ${invoice.TotalAmount}</p>
-                <p>Discounted: ${invoice.Discount}</p>
-                <h3>Total Quantity: ${totalQty}</h3>
-    
-                <h3>Items</h3>
+                <p>Discounted: ${invoice.Discount}% </p>
+                <p>Total Quantity: ${totalQty}</p>
+                <p>Items</p>
                 <table>
                     <thead>
                         <tr>
@@ -77,6 +101,7 @@ const TableData = (props) => {
                         ${itemRows}
                     </tbody>
                 </table>
+                <p>Total Amount: ${invoice.TotalAmount}</p>
             </body>
             </html>
         `);

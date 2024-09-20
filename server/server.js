@@ -2,10 +2,16 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import Invoice from './Invoice.js'; // Import the invoice schema with .js extension
+import Invoice from './Invoice.js'; 
+import Stock from './Stock.js'
+import User from './User.js';
+
+import bcrypt from 'bcrypt';
 
 const app = express();
 const PORT = 5000;
+const router = express.Router();
+const saltRounds = 10
 
 // MongoDB connection
 mongoose.connect('mongodb+srv://jackpot:jackpot@cluster0.84kv7m8.mongodb.net/jackpot?retryWrites=true&w=majority&appName=Cluster0', {
@@ -30,13 +36,67 @@ const checkAuth = (req, res, next) => {
     next();
 };
 
+// login
+app.post('/api/login', async (req, res) => {
+    try {
+        const { Email, Password } = req.body;
+        const user = await User.findOne({ Email });
+        if (!user) {
+            return res.status(401).json({ error: "Invalid email or password" });
+        }
+        const isPasswordValid = await bcrypt.compare(Password, user.Password); // Add await here as well
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: "Invalid email or password" });
+        }
+        res.status(200).json({ status: "success", message: "Login successful" });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+        console.log(e);
+    }
+});
+
+app.post('/api/change-password', async (req, res) => {
+    try {
+        const { Email, Password, newPassword } = req.body;
+
+        // Find the user by email
+        const user = await User.findOne({ Email });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Verify the current password
+        const isPasswordValid = await bcrypt.compare(Password, user.Password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: "Current password is incorrect" });
+        }
+
+        // Validate new password (optional: add your custom validations here)
+        if (newPassword.length < 8) {
+            return res.status(400).json({ error: "New password must be at least 8 characters long" });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+        // Update the user's password
+        user.Password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({ message: "Password changed successfully" });
+    } catch (error) {
+        console.error('Error changing password:', error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+// invoice 
     app.post('/api/invoice', async (req, res) => {
         try {
             const { PayeeName, date, Amount, payment,PhNo,Paymentmeth ,Discount,DiscountAmt,ListOfItem, ListOfQty, ListOfPrice, TotalAmount } = req.body;
             
             // Generate a unique invoice number (example: based on the current timestamp)
             const invoiceNumber = `${Date.now()}`;
-            console.log(req.body)
+            // console.log(req.body)
             const newInvoice = new Invoice({
                 PayeeName,
                 date,
@@ -82,16 +142,31 @@ app.get('/api/invoices',async (req, res) => {
     }
 });
 
-app.post('/api/login', (req, res) => {
-    const authToken = '123456789'; 
-    res.cookie('authToken', authToken, { httpOnly: true, maxAge: 3600000 }); // 1 hour cookie
-    res.json({ message: 'Logged in' });
-});
+    // Stock Apisssss
+app.get('/api/stocks',async(req,res)=>{
+    try{
+        const stock=await Stock.find()
+        res.json(stock)
+    }catch(error){
+        console.error('Error fetching invoices:', error);
+        res.status(500).send('Server error');
+    }
+})
+app.post('/api/AddStock',async(req,res)=>{
+    try{
+        const {Item,Qty} = req.body;
+        const newStock=new Stock ({
+            Item:Item,
+            Qty:Qty
+        })
+        const savedStock = await newStock.save();
+        res.status(201).json(savedStock);
+    }catch(error){
+        console.error('Error saving invoice:', error);
+        res.status(500).send('Server error');
+    }
+})
 
-app.post('/api/logout', (req, res) => {
-    res.clearCookie('authToken');
-    res.json({ message: 'Logged out' });
-});
 
 app.get('/api/server-time', (req, res) => {
     res.json({ time: new Date() });

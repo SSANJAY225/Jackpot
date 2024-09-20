@@ -21,6 +21,7 @@ const Invoice = () => {
             .catch((error) => console.error("Error fetching data:", error));
     }, []);
 
+
     const handleEdit = (invoice) => {
         setEditData(invoice); // Set the invoice data for editing
         setShow(true); // Open the modal

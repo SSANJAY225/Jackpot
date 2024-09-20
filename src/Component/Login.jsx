@@ -1,25 +1,25 @@
 // import './Login.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import Axios from 'axios';
+import Axios from 'axios';
 
 const Login = () => {
-    const [Email, setEmailState] = useState('');
+    const [Email, setEmail] = useState('');
     const [Password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Axios.post("http://localhost:3000/login", { Email, Password })
-        //     .then((response) => {
-        //         setEmail(Email);
+        Axios.post("http://localhost:5000/api/login", { Email, Password })
+            .then((response) => {
+                setEmail(Email);
                 navigate('/invoice');
-            // })
-            // .catch((error) => {
-            //     console.log(error.response.data.error);
-            //     setMessage('Error logging in.'+" "+error.response.data.error);
-            // });
+            })
+            .catch((error) => {
+                console.log(error.response.data.error);
+                setMessage('Error logging in.'+" "+error.response.data.error);
+            });
     };
 
     return (
@@ -33,7 +33,7 @@ const Login = () => {
                             type="email"
                             placeholder="Email"
                             value={Email}
-                            onChange={(e) => setEmailState(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                         <label>Password: </label>

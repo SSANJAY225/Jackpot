@@ -18,6 +18,24 @@ const AddData = ({ close, addInvoiceData, editData }) => {
     const [Paymentmeth,setPaymentmeth]=useState();
     const [PhNo,setPhNo]=useState();
     const [TotalCount,setTotalCount]=useState();
+    const [StockData,setStockData]=useState([]);
+    const [FilteredItems, setFilteredItems] = useState([[]]); // Filtered stock data for each item
+
+
+    useEffect(() => {
+        const fetchStockData = async () => {
+            try {
+                const response = await Axios.get("http://localhost:5000/api/stocks"); 
+               setStockData(response.data.map(stock=>stock.Item)); 
+               
+            } catch (error) {
+                console.error("Error fetching stock data:", error);
+            }
+        };
+        fetchStockData();
+    }, []);
+
+
     useEffect(() => {
         if (editData) {
             setPayeeName(editData.PayeeName);
@@ -83,6 +101,30 @@ const AddData = ({ close, addInvoiceData, editData }) => {
         }
     };
 
+    const handleSelect = (index, selectedItem) => {
+        const newItems = [...ListOfItem];
+        newItems[index] = selectedItem;
+        setListOfItem(newItems);
+
+        const newFilteredItems = [...FilteredItems];
+        newFilteredItems[index] = [];
+        setFilteredItems(newFilteredItems);
+    };
+
+    const handleItemChange = (index, value) => {
+        const newItems = [...ListOfItem];
+        newItems[index] = value;
+        setListOfItem(newItems);
+
+        const filtered = StockData.filter(item =>
+            item.toLowerCase().includes(value.toLowerCase())
+        );
+
+        const newFilteredItems = [...FilteredItems];
+        newFilteredItems[index] = filtered;
+        setFilteredItems(newFilteredItems);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -101,7 +143,6 @@ const AddData = ({ close, addInvoiceData, editData }) => {
                 ListOfPrice: ListOfPrice.map(price => parseFloat(price, 10)),
                 TotalAmount
             };
-            console.log(PhNo)
             if (editData) {
                 await Axios.put(`http://localhost:5000/api/invoice/${editData._id}`, newInvoiceData);
             } else {
@@ -191,12 +232,22 @@ const AddData = ({ close, addInvoiceData, editData }) => {
 
                     {ListOfItem.map((item, index) => (
                         <div key={index}>
-                            <label>Item {index + 1}:</label>
+                             <label>Item {index + 1}:</label>
                             <input
                                 type="text"
                                 value={ListOfItem[index]}
-                                onChange={(e) => handleChange(index, "item", e.target.value)}
+                                onChange={(e) => handleItemChange(index, e.target.value)}
                             />
+                            {FilteredItems[index] && FilteredItems[index].length > 0 && (
+                                <ul class="dropdown">
+                                {FilteredItems.map((item, index) => (
+                                    <li key={index} onClick={() => handleSelect(item)}>
+                                        {item}<br/>
+                                    </li>
+                                    
+                                ))}
+                            </ul>
+                            )}
                             <label>Quantity {index + 1}:</label>
                             <input
                                 type="number"

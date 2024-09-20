@@ -8,8 +8,9 @@ const Nav=()=>{
                     <p>jackpot</p>
                 </div>
                 <ul>
-                    {/* <li><a href="/dashboard">Dashboard</a></li>
-                    <li><a href="/profile">profile</a></li> */}
+                    <li><a href="/stock">stock</a></li>
+                    <li><a href="/invoice">invoice</a></li>
+                    <li><a href="/profile">profile</a></li>
                     <li><a href="/">Singout</a></li>
                 </ul>
                 
