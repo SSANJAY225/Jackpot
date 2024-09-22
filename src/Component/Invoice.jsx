@@ -13,14 +13,15 @@ const Invoice = () => {
     const [fromDate, setFromDate] = useState(''); // State for "from" date
     const [toDate, setToDate] = useState(''); // State for "to" date
     const [totalDiscountAmount, setTotalDiscountAmount] = useState(0); // Initialize to 0
-    const [totalOverall,settotalOverall]=useState(0)
+    const [totalOverall, setTotalOverall] = useState(0);
+    const [ItemPerPage, setItemPerPage] = useState(10); // Default to 5 items per page
+    const [currentPage, setCurrentPage] = useState(1); // Track the current page
 
     useEffect(() => {
-        Axios.get('http://localhost:5000/api/invoices')
+        Axios.get('https://jackpot-backend-r3dc.onrender.com/api/invoices')
             .then((res) => setApiData(res.data))
             .catch((error) => console.error("Error fetching data:", error));
     }, []);
-
 
     const handleEdit = (invoice) => {
         setEditData(invoice); // Set the invoice data for editing
@@ -28,18 +29,16 @@ const Invoice = () => {
     };
 
     const addInvoiceData = () => {
-        Axios.get('http://localhost:5000/api/invoices')
+        Axios.get('https://jackpot-backend-r3dc.onrender.com/api/invoices')
             .then((res) => setApiData(res.data))
             .catch((error) => console.error("Error fetching data:", error));
     };
 
-    // Function to check if the invoice date is within the selected date range
     const isWithinDateRange = (invoiceDate) => {
         const invoiceDateObj = new Date(invoiceDate);
         const fromDateObj = fromDate ? new Date(fromDate) : null;
         const toDateObj = toDate ? new Date(toDate) : null;
 
-        // Check if the invoice date falls within the from-to range
         if (fromDateObj && invoiceDateObj < fromDateObj) return false;
         if (toDateObj && invoiceDateObj > toDateObj) return false;
         return true;
@@ -55,14 +54,31 @@ const Invoice = () => {
             return total + (invoice.DiscountAmt || 0); 
         }, 0);
         setTotalDiscountAmount(total);
-    }, [filteredInvoices]); // Recalculate whenever filteredInvoices changes
+    }, [filteredInvoices]);
 
     useEffect(() => {
         const totalOverall = filteredInvoices.reduce((totalOverall, invoice) => {
             return totalOverall + (invoice.TotalAmount || 0); 
         }, 0);
-        settotalOverall(totalOverall);
+        setTotalOverall(totalOverall);
     }, [filteredInvoices]);
+
+    // Pagination logic
+    const indexOfLastItem = currentPage * ItemPerPage;
+    const indexOfFirstItem = indexOfLastItem - ItemPerPage;
+    const currentInvoices = filteredInvoices.slice().reverse().slice(indexOfFirstItem, indexOfLastItem); // Reverse to show latest first
+
+    const handleNextPage = () => {
+        if (currentPage < Math.ceil(filteredInvoices.length / ItemPerPage)) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
 
     return (
         <>
@@ -102,8 +118,28 @@ const Invoice = () => {
 
             <div style={{ marginTop: '20px' }}>
                 <strong>Total Discount Amount: </strong> RS:{totalDiscountAmount.toFixed(2)}/-
-                <strong>Total  Amount: </strong> RS:{totalOverall.toFixed(2)}/-
+                <strong>Total Amount: </strong> RS:{totalOverall.toFixed(2)}/-
             </div>
+            
+            <div>
+                <label>Items Per Page: </label>
+                <input
+                    type="number"
+                    value={ItemPerPage}
+                    onChange={(e) => setItemPerPage(Number(e.target.value))} // Ensure value is a number
+                    style={{ padding: '5px', width: '60px' }}
+                />
+            </div>
+
+            {show && (
+                <AddData 
+                    close={() => setShow(false)} 
+                    addInvoiceData={addInvoiceData} 
+                    editData={editData} // Pass editData prop to AddData
+                />
+            )}
+
+            <button onClick={() => { setEditData(null); setShow(true); }}>Add</button>
 
             <table id='customers'>
                 <thead>
@@ -121,12 +157,12 @@ const Invoice = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredInvoices.length > 0 ? (
-                        filteredInvoices.slice().reverse().map((invoice) => (
+                    {currentInvoices.length > 0 ? (
+                        currentInvoices.map((invoice) => (
                             <TableData
                                 key={invoice._id}
                                 detail={invoice}
-                                onEdit={handleEdit} // Pass handleEdit function
+                                onEdit={handleEdit}
                             />
                         ))
                     ) : (
@@ -135,17 +171,21 @@ const Invoice = () => {
                         </tr>
                     )}
                 </tbody>
-            </table>
+            </table>        
 
-            <button onClick={() => { setEditData(null); setShow(true); }}>Add</button>
-            
-            {show && (
-                <AddData 
-                    close={() => setShow(false)} 
-                    addInvoiceData={addInvoiceData} 
-                    editData={editData} // Pass editData prop to AddData
-                />
-            )}
+            {/* Pagination Controls */}
+            <div style={{ marginTop: '20px' }}>
+                <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                    Previous
+                </button>
+                <span style={{ margin: '0 10px' }}>Page {currentPage}</span>
+                <button 
+                    onClick={handleNextPage} 
+                    disabled={currentPage === Math.ceil(filteredInvoices.length / ItemPerPage)}
+                >
+                    Next
+                </button>
+            </div>
         </>
     );
 };

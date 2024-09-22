@@ -41,7 +41,15 @@ const router=createBrowserRouter([
 
 const App=()=>{
   return (
-    <RouterProvider router={router} />
+    <Router>
+      <Nav />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/stock" element={<Stock />} />
+        <Route path="/invoice" element={<Invoice />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
+    </Router>
   )
 }
 

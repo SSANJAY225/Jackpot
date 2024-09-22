@@ -89,14 +89,39 @@ app.post('/api/change-password', async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+app.post('/api/invoicestock',async (req,res)=>{
+    try{
+        const {Item,Qty}=req.body
+        if (!Item || !Qty) {
+            return res.status(400).json({ message: 'Item name and quantity are required.' });
+        }
+
+        const stockItem = await Stock.findOne({ Item });
+
+        if (!stockItem) {
+            return res.status(404).json({ message: 'Item not found in stock.' });
+        }
+        if (stockItem.Qty < Qty) {
+            return res.status(400).json({ message: 'Insufficient stock quantity.' });
+        }
+        stockItem.Qty -= Qty;
+        await stockItem.save();
+        console.log(stockItem)
+        res.status(200).json({ message: `Stock updated successfully. ${Qty} units of ${Item} deducted.` });
+
+    }catch(error){
+        console.error('Error fetching invoice stock:', error);
+    }
+})
+
 // invoice 
     app.post('/api/invoice', async (req, res) => {
         try {
             const { PayeeName, date, Amount, payment,PhNo,Paymentmeth ,Discount,DiscountAmt,ListOfItem, ListOfQty, ListOfPrice, TotalAmount } = req.body;
             
-            // Generate a unique invoice number (example: based on the current timestamp)
             const invoiceNumber = `${Date.now()}`;
-            // console.log(req.body)
+
             const newInvoice = new Invoice({
                 PayeeName,
                 date,
@@ -154,10 +179,15 @@ app.get('/api/stocks',async(req,res)=>{
 })
 app.post('/api/AddStock',async(req,res)=>{
     try{
-        const {Item,Qty} = req.body;
+        const {Item,Qty,Date,Dealer,Mrp,Sp} = req.body;
         const newStock=new Stock ({
             Item:Item,
-            Qty:Qty
+            Qty:Qty,
+            Date,
+            Dealer,
+            Mrp,
+            Sp
+
         })
         const savedStock = await newStock.save();
         res.status(201).json(savedStock);
@@ -167,7 +197,24 @@ app.post('/api/AddStock',async(req,res)=>{
     }
 })
 
+app.put('/api/stocks/:id', async (req, res) => {
+    try {
+        const { id } = req.params; // Get the stock ID from the request parameters
+        const updatedStock = req.body; // Get the updated stock data from the request body
 
+        // Find the stock by ID and update it
+        const stock = await Stock.findByIdAndUpdate(id, updatedStock, { new: true });
+        
+        if (!stock) {
+            return res.status(404).json({ message: 'Stock not found' });
+        }
+
+        res.status(200).json(stock); // Respond with the updated stock data
+    } catch (error) {
+        console.error("Error updating stock:", error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 app.get('/api/server-time', (req, res) => {
     res.json({ time: new Date() });
     });

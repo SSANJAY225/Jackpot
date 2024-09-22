@@ -1,22 +1,19 @@
-const StockTableData=(props)=>{
-    const {stock}=props
-    // console.log(stock)
-    // if (!stock) {
-    //     return (
-    //         <tr>
-    //             <td colSpan="12">No data available</td>
-    //         </tr>
-    //     );
-    // }
-
-    return(<>
+const StockTableData = ({ stock, onEdit }) => {
+    return (
         <tr>
-                <td>{stock.Item}</td>
-                <td>{stock.Qty}</td>
-                <td>{stock.Dealer}</td>
-                <td><button onClick={() => onEdit(detail)}>Details</button></td>
-            </tr>
-    </>)
-}
+            {/* <td>{Item}</td> */}
+            <td>{stock.Item}</td>
+            <td>{stock.Qty}</td>
+            <td>{stock.Dealer}</td>
+            <td>{stock.Date}</td>
+            <td>{stock.Mrp}</td>
+            <td>{stock.Sp}</td>
+            <td>
+                {/* Call the onEdit function with the stock details */}
+                <button onClick={() => onEdit(stock)}>Details</button>
+            </td>
+        </tr>
+    );
+};
 
-export default StockTableData
+export default StockTableData;

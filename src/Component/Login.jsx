@@ -11,7 +11,7 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        Axios.post("http://localhost:5000/api/login", { Email, Password })
+        Axios.post("https://jackpot-backend-r3dc.onrender.com/api/login", { Email, Password })
             .then((response) => {
                 setEmail(Email);
                 navigate('/invoice');
@@ -45,7 +45,6 @@ const Login = () => {
                             required
                         />
                         <button type="submit">Signin</button>
-                        <a href="/signup">Create new user</a>
                         <p>{message}</p>
                     </div>
                 </form>

@@ -55,7 +55,7 @@
     max-height: 150px;  /* Adjust height as needed */
     overflow-y: auto;    /* Enable vertical scrolling */
     /* overflow-x: auto;  Hide horizontal scrolling */
-    width: 200px;        /* Match input field width */
+    width: auto;        /* Match input field width */
     z-index: 1000;       /* Ensure it appears above other elements */
     list-style-type: none;
     display:block;
@@ -66,7 +66,7 @@
 .dropdown li {
     padding: 8px;
     cursor: pointer;
-    display: block;       /* Ensure list items are block elements */
+    /* display: block;       Ensure list items are block elements */
 }
 
 .dropdown ul:hover {

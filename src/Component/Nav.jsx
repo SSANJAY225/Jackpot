@@ -8,7 +8,7 @@ const Nav=()=>{
                     <p>jackpot</p>
                 </div>
                 <ul>
-                    <li><a href="/stock">stock</a></li>
+                    <li><a href="/stock" onClick={handileStock}>stock</a></li>
                     <li><a href="/invoice">invoice</a></li>
                     <li><a href="/profile">profile</a></li>
                     <li><a href="/">Singout</a></li>
