@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom'
 import './Nav.css'
 
 const Nav=()=>{
+    const navigate=useNavigate()
     return(
         <>
             <div className='navbar'>
@@ -8,10 +10,10 @@ const Nav=()=>{
                     <p>jackpot</p>
                 </div>
                 <ul>
-                    <li><a href="/stock" onClick={handileStock}>stock</a></li>
-                    <li><a href="/invoice">invoice</a></li>
-                    <li><a href="/profile">profile</a></li>
-                    <li><a href="/">Singout</a></li>
+                    <li onClick={()=>navigate('/stock')}><a>stock</a></li>
+                    <li onClick={()=>navigate('/invoice')}><a>invoice</a></li>
+                    <li onClick={()=>navigate('/profile')}><a>profile</a></li>
+                    <li onClick={()=>navigate('/')}>Singout</li>
                 </ul>
                 
             </div>

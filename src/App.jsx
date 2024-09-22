@@ -1,56 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Stock from './Component/Stock'
-import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom"
-import Invoice from './Component/Invoice'
-import { useNavigate } from 'react-router-dom';
-import Login from './Component/Login'
-import ChangePass from './Component/ChangePass'
+import { RouterProvider, Outlet ,createBrowserRouter } from "react-router-dom";
+import Stock from './Component/Stock.jsx';
+import Invoice from './Component/Invoice.jsx';
+import Login from './Component/Login.jsx';
+import ChangePass from './Component/ChangePass.jsx';
 
-const Log=()=>{
+const Layout = () => {
     return (
-        <>
-      <Outlet/>
-    </>
-  )
-}
+      <>
+        <Outlet />
+      </>
+    );
+};
 
-const router=createBrowserRouter([
-  {
-    path: "/",
-    // element:<Login/>,
-    children:[
-      {
-        path:"/",
-        element:<Login/>
-      },{
-        path:"/invoice",
-        element:<Invoice/>
-      },{
-        path:"/stock",
-        element:<Stock/>
-      },{
-        path:"/profile",
-        element:<ChangePass/>
-      }
-    ]
-  },
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <Layout />, // Main layout with Nav
+        children: [
+            {
+                path: "/",
+                element: <Login /> // Login as the default route
+            },
+            {
+                path: "/invoice",
+                element: <Invoice />
+            },
+            {
+                path: "/stock",
+                element: <Stock />
+            },
+            {
+                path: "/profile",
+                element: <ChangePass />
+            }
+        ]
+    }
 ]);
 
-const App=()=>{
-  return (
-    <Router>
-      <Nav />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/stock" element={<Stock />} />
-        <Route path="/invoice" element={<Invoice />} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
-    </Router>
-  )
-}
+const App = () => {
+    return (
+        <RouterProvider router={router} />
+    );
+};
 
-export default App
+export default App;
