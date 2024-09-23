@@ -120,8 +120,8 @@ const TableData = (props) => {
                 <td>{detail.PayeeName}</td>
                 <td>{detail.PhNo}</td>
                 <td>{detail.date}</td>
-                <td><button onClick={() => handlePrint(detail)}>Print</button></td>
-                <td><button onClick={() => onEdit(detail)}>Details</button></td>
+                <td><button className='buttondet' onClick={() => handlePrint(detail)}>Print</button></td>
+                <td><button className='buttondet' onClick={() => onEdit(detail)}>Details</button></td>
                 <td>{detail.TotalAmount}</td>
                 <td>{detail.Discount}</td>
                 <td>{detail.DiscountAmt}</td>

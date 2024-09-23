@@ -28,7 +28,7 @@ const AddData = ({ close, addInvoiceData, editData }) => {
     useEffect(() => {
         const fetchStockData = async () => {
             try {
-                const response = await Axios.get("https://jackpot-backend-r3dc.onrender.com/api/stocks"); 
+                const response = await Axios.get("http://localhos:5000/api/stocks"); 
                setStockData(response.data.map(stock=>stock.Item)); 
                
             } catch (error) {
@@ -133,7 +133,7 @@ const AddData = ({ close, addInvoiceData, editData }) => {
         item.map(async (it,index)=>{
             console.log(item[index]+"=>"+qty[index])
             try{
-                const response=await axios.post("https://jackpot-backend-r3dc.onrender.com/api/invoicestock",{
+                const response=await axios.post("http://localhost:5000/api/invoicestock",{
                     Item:item[index],Qty:qty[index]
                 })
                 console.log(response.data)
@@ -163,9 +163,9 @@ const AddData = ({ close, addInvoiceData, editData }) => {
                 TotalAmount
             };
             if (editData) {
-                await Axios.put(`https://jackpot-backend-r3dc.onrender.com/api/invoice/${editData._id}`, newInvoiceData);
+                await Axios.put(`http://localhost:5000/api/invoice/${editData._id}`, newInvoiceData);
             } else {
-                await Axios.post("https://jackpot-backend-r3dc.onrender.com/api/invoice", newInvoiceData);
+                await Axios.post("http://localhost:5000/api/invoice", newInvoiceData);
             }
             addInvoiceData();
             close();

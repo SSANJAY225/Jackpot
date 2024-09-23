@@ -18,7 +18,7 @@ const Invoice = () => {
     const [currentPage, setCurrentPage] = useState(1); // Track the current page
 
     useEffect(() => {
-        Axios.get('https://jackpot-backend-r3dc.onrender.com/api/invoices')
+        Axios.get(' http://localhost:5000/api/invoices')
             .then((res) => setApiData(res.data))
             .catch((error) => console.error("Error fetching data:", error));
     }, []);
@@ -29,7 +29,7 @@ const Invoice = () => {
     };
 
     const addInvoiceData = () => {
-        Axios.get('https://jackpot-backend-r3dc.onrender.com/api/invoices')
+        Axios.get(' http://localhost:5000/api/invoices')
             .then((res) => setApiData(res.data))
             .catch((error) => console.error("Error fetching data:", error));
     };
@@ -79,27 +79,31 @@ const Invoice = () => {
             setCurrentPage(currentPage - 1);
         }
     };
+    const inputStyle = {
+        padding: '10px',
+        width: '98.5%',
+        fontSize: '16px',
+        borderRadius: '4px',
+        border: '1px solid #ccc',
+    };
+    
 
     return (
+        
         <>
+        <div className="page-container">
             <Nav/>
             <div style={{ margin: '20px 0' }}>
-                <input
-                    type="text"
-                    placeholder="Search by Payee Name or Invoice Number"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ 
-                        padding: '10px', 
-                        width: '300px', 
-                        fontSize: '16px',
-                        borderRadius: '4px',
-                        border: '1px solid #ccc',
-                        marginRight: '10px'
-                    }}
-                />
-
-                <label style={{ marginLeft: '10px', marginRight: '5px' }}>From:</label>
+                
+            <input
+                type="text"
+                placeholder="Search by Invoice Number"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={inputStyle}
+            />
+                <div className="date_label">
+                <label style={{ marginLeft: '988px', marginRight: '5px' }}>From :</label>
                 <input 
                     type="date" 
                     value={fromDate} 
@@ -114,20 +118,23 @@ const Invoice = () => {
                     onChange={(e) => setToDate(e.target.value)}
                     style={{ padding: '5px' }}
                 />
-            </div>
-
-            <div style={{ marginTop: '20px' }}>
-                <strong>Total Discount Amount: </strong> RS:{totalDiscountAmount.toFixed(2)}/-
-                <strong>Total Amount: </strong> RS:{totalOverall.toFixed(2)}/-
-            </div>
-            
-            <div>
+                </div>
+            </div>            
+                
+            <div  className="item-per-page-wrapper" >
                 <label>Items Per Page: </label>
                 <input
                     type="number"
                     value={ItemPerPage}
                     onChange={(e) => setItemPerPage(Number(e.target.value))} // Ensure value is a number
-                    style={{ padding: '5px', width: '60px' }}
+                    style={{ 
+                        padding: '5px', 
+                        width: '40px', 
+                        fontSize: '16px',
+                        borderRadius: '4px',
+                        border: '1px solid #ccc',
+                        marginLeft:'10px'
+                    }}
                 />
             </div>
 
@@ -138,8 +145,15 @@ const Invoice = () => {
                     editData={editData} // Pass editData prop to AddData
                 />
             )}
+            <div className="buttonclass">
+    <button
+        onClick={() => { setEditData(null); setShow(true); }}
+        className="redButton"
+    >
+        Add
+    </button>
+</div>
 
-            <button onClick={() => { setEditData(null); setShow(true); }}>Add</button>
 
             <table id='customers'>
                 <thead>
@@ -185,6 +199,14 @@ const Invoice = () => {
                 >
                     Next
                 </button>
+
+                    <div style={{ marginTop:'20px'}}> <hr/></div>
+                <div className="total-amount">
+                <strong>Total Discount Amount: </strong> RS:{totalDiscountAmount.toFixed(2)}/-
+                <strong style={{marginLeft:'5px'}}>Total Amount: </strong> RS:{totalOverall.toFixed(2)}/-
+            </div>
+
+            </div>
             </div>
         </>
     );

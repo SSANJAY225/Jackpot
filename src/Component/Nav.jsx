@@ -5,13 +5,13 @@ const Nav=()=>{
         <>
             <div className='navbar'>
                 <div className='name'>
-                    <p>jackpot</p>
+                    <p>Jackpot</p>
                 </div>
                 <ul>
-                    <li><a href="/stock" onClick={handileStock}>stock</a></li>
-                    <li><a href="/invoice">invoice</a></li>
-                    <li><a href="/profile">profile</a></li>
-                    <li><a href="/">Singout</a></li>
+                    <li><a href="/stock">Stock</a></li>
+                    <li><a href="/invoice">Invoice</a></li>
+                    <li><a href="/profile">Profile</a></li>
+                    <li><a href="/">Sign out</a></li>
                 </ul>
                 
             </div>

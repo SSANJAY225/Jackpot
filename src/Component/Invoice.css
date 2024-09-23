@@ -1,39 +1,176 @@
+body {
+  background-color: #f3f9fc; /* Light blue background */
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.page-container {
+  max-width: 1500px; /* Limits the width for larger screens */
+  margin: 30px auto;  /* Centers the container on the page */
+  padding: 20px;
+  border: 1px solid #ddd; /* Light border around the container */
+  border-radius: 10px; /* Soft rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  background-color: #fff; /* White background inside the border */
+}
+
 #customers {
-    /* font-family: Arial, Helvetica, sans-serif; */
-    border-collapse: collapse;
-    width: 100%;
-  }
-  
-  #customers td, #customers th {
-    border: 1px solid #ddd;
-    padding: 8px;
-  }
-  
-  #customers tr:nth-child(even){background-color: #f2f2f2;}
-  
-  #customers tr:hover {background-color: #ddd;}
-  
-  #customers th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    /* background-color: #04AA6D;
-    color: white; */
-  }
-  table{
-    border-top: 10px;
-  }
-  button{
-    background-color: transparent;
-    border: 1px solid #999;
-    padding: 0.3rem 0.8rem;
-    border-radius: 0.3rem;
-    background-image:linear-gradient(45deg ,red 50%, transparent 50%) ;
-    background-size: 300%;
-    background-position: 100%;
-    transition: all 0.5s ease;
-  }
-  button:hover{
-    background-position: 0;
-    color: #fff;
-  }
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 12px; /* Increased padding for more space */
+}
+
+#customers tr:nth-child(even) {
+  background-color: #f9f9f9; /* Softer alternate row color */
+}
+
+#customers tr:hover {
+  background-color: #f1f1f1; /* Light hover effect */
+}
+
+#customers th {
+  padding-top: 14px;
+  padding-bottom: 14px;
+  text-align: left;
+  background-color: #333; /* Dark background for headers */
+  color: #fff; /* White text for contrast */
+}
+
+table {
+  border-top: 3px solid #333; /* Thicker border at the top for a polished look */
+}
+
+.buttondet:not(.redButton) {
+  background-color: transparent;
+  border: 1px solid #666; /* Darker border for the button */
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.3rem;
+  background-image: linear-gradient(45deg, #333 50%, transparent 50%); /* Subtle dark gradient */
+  background-size: 300%;
+  background-position: 100%;
+  transition: all 0.4s ease; /* Faster transition for responsiveness */
+  color: #333; /* Dark text color */
+  font-weight: bold; /* Slightly bolder text */
+  cursor: pointer; /* Pointer cursor for button */
+}
+
+.buttondet:not(.redButton):hover {
+  background-position: 0;
+  background-color: #333; /* Dark background on hover */
+  color: #fff; /* White text on hover */
+}
+
+.buttondet:focus {
+  outline: none; /* Remove the default focus outline */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Subtle shadow when button is focused */
+}
+
+#header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  padding: 10px 0;
+}
+
+input[type="text"], input[type="date"] {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.3rem;
+  width: 200px;
+}
+
+input[type="text"]:focus, input[type="date"]:focus {
+  border-color: #333; /* Darker border on focus */
+  outline: none;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination a {
+  margin: 0 5px;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  color: #333;
+  text-decoration: none;
+  border-radius: 0.3rem;
+  transition: background-color 0.3s ease;
+}
+
+.pagination a:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.date_label, .item-per-page-wrapper {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.date_label {
+  margin-top: 20px;
+  align-items: right;
+ }
+
+.item-per-page-wrapper {
+  float: right;
+  width: 50%;
+  text-align: right;
+}
+
+.total-amount {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.total-amount strong {
+  margin-right: 10px; /* Adds space between the label and the amount */
+}
+
+.total-amount strong + span {
+  margin-left: 5px;   /* Adds space between different label-amount pairs */
+}
+
+.total-amount .total-label {
+  text-align: right;  /* Aligns the labels on the right */
+}
+
+.total-amount .total-value {
+  text-align: left;   /* Aligns the amounts on the left */
+}
+
+.buttonclass {
+  width: 99%; /* Makes the container bigger */
+  margin: 0 auto; /* Centers the container */
+}
+
+.redButton {
+  background-color: rgb(139, 51, 51); /* Red background for the button */
+  color: white; /* White text */
+  border: none; /* No border */
+  padding: 10px 20px; /* Adds padding to make the button larger */
+  font-size: 16px; /* Increases font size */
+  cursor: pointer; /* Shows pointer cursor */
+  border-radius: 5px;
+}
+
+/* styles.css */
+.search-input {
+  padding: 10px;
+  width: 1478px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}

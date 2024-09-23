@@ -1,21 +1,45 @@
-.navbar{
-    border: 1px solid black;
+.navbar {
+    background-color: #f8f9fa; /* Light background for a clean look */
+    border: 1px solid #dee2e6; /* Subtle border color */
     border-radius: 8px;
-    height: 50px;
-    width: max;
-    display:flex;
-    justify-content: space-between;
-    padding: 10px;
-}
-ul{
-    list-style: none;
+    height: 60px; /* Slightly taller for a more balanced appearance */
     display: flex;
     justify-content: space-between;
+    align-items: center; /* Center items vertically */
+    padding: 0 20px; /* More padding for a spacious feel */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin-top: 10px;
 }
-li{
-    margin: 0 10px;
+
+.name p {
+    font-size: 1.5em; /* Larger font for the name */
+    font-weight: bold; /* Bold for emphasis */
+    color: #343a40; /* Darker text color */
+    margin-left: 15px;
 }
-a{
+
+ul {
+    list-style: none;
+    display: flex;
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+}
+
+li {
+    margin: 0 15px; /* More spacing between items */
+}
+
+a {
     text-decoration: none;
-    color: black;
+    color: #007bff; /* Use a blue color for links */
+    font-weight: 500; /* Medium weight for readability */
+    transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+a:hover {
+    color: #0056b3; /* Darker blue on hover for emphasis */
+}
+
+a:active {
+    color: #004085; /* Even darker color when active */
 }

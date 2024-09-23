@@ -2,12 +2,11 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import Stock from './Component/Stock'
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom"
 import Invoice from './Component/Invoice'
 import { useNavigate } from 'react-router-dom';
 import Login from './Component/Login'
-import ChangePass from './Component/ChangePass'
+import Stock from './Component/Stock'
 
 const Log=()=>{
     return (
@@ -31,9 +30,6 @@ const router=createBrowserRouter([
       },{
         path:"/stock",
         element:<Stock/>
-      },{
-        path:"/profile",
-        element:<ChangePass/>
       }
     ]
   },
@@ -41,15 +37,7 @@ const router=createBrowserRouter([
 
 const App=()=>{
   return (
-    <Router>
-      <Nav />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/stock" element={<Stock />} />
-        <Route path="/invoice" element={<Invoice />} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
-    </Router>
+    <RouterProvider router={router} />
   )
 }
 

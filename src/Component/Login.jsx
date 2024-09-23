@@ -11,7 +11,7 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        Axios.post("https://jackpot-backend-r3dc.onrender.com/api/login", { Email, Password })
+        Axios.post("http://localhost:5000/api/login", { Email, Password })
             .then((response) => {
                 setEmail(Email);
                 navigate('/invoice');

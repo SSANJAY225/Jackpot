@@ -10,7 +10,7 @@ const StockTableData = ({ stock, onEdit }) => {
             <td>{stock.Sp}</td>
             <td>
                 {/* Call the onEdit function with the stock details */}
-                <button onClick={() => onEdit(stock)}>Details</button>
+                <button className='buttondet' onClick={() => onEdit(stock)}>Details</button>
             </td>
         </tr>
     );
