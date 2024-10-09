@@ -1,0 +1,101 @@
+.modal{
+    position:fixed;
+    top:0;
+    left:0;
+    background-color: rgba(0,0,0,0.4);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.form{
+    background-color: #fff;
+    max-width: 1000px;
+    /* min-width: 250px; */
+    width:100%;
+    border-radius: 0.4rem;
+    box-shadow: 0px 1px 10px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+.form{
+    flex: 1;
+    padding: 1rem;
+}
+.title{
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
+}
+.footer{
+    display: flex;
+    padding-top: 1rem;
+    border-top: 1px solid #ccc;
+    justify-content: flex-end;
+}
+.close{
+    position: absolute;
+    font-size: 2rem;
+    top:0.2rem;
+    right:1rem;
+    cursor: pointer;
+}
+.content{
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+}
+.dropdown {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    max-height: 150px;  /* Adjust height as needed */
+    overflow-y: auto;    /* Enable vertical scrolling */
+    /* overflow-x: auto;  Hide horizontal scrolling */
+    width: auto;        /* Match input field width */
+    z-index: 1000;       /* Ensure it appears above other elements */
+    list-style-type: none;
+    display:block;
+    padding-left: 0;
+    margin-top: 5px;     /* Add some space between input and dropdown */
+}
+
+.dropdown li {
+    padding: 8px;
+    cursor: pointer;
+    /* display: block;       Ensure list items are block elements */
+}
+
+.dropdown ul:hover {
+    background-color: #f0f0f0; /* Highlight on hover */
+}
+/* Add a class for the scrollable items container */
+.items-container {
+    max-height: 300px; /* Limit the height to 300px or adjust as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+/* Optional: Styling for the dropdown of filtered items */
+.dropdown {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.dropdown li {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.dropdown li:hover {
+    background-color: #eee;
+}
+

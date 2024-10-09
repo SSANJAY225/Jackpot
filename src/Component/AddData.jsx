@@ -1,0 +1,329 @@
+import { useState, useEffect } from "react";
+import Axios from 'axios';
+import './AddData.css';
+import { DropDownList } from "@progress/kendo-react-dropdowns";
+import { filterBy } from "@progress/kendo-data-query";
+import axios from "axios";
+
+const AddData = ({ close, addInvoiceData, editData }) => {
+    const [PayeeName, setPayeeName] = useState("");
+    const [invoiceDate, setInvoiceDate] = useState("");
+    const [Amount, setAmount] = useState(0);
+    const [Payment, setPayment] = useState("online"); // Default to online payment
+    const [AmountReceived, setAmountReceived] = useState(0); // For cash payment
+    const [InvoiceNumber, setInvoiceNumber] = useState("");
+    const [ListOfItem, setListOfItem] = useState([""]);
+    const [ListOfQty, setListOfQty] = useState([1]);
+    const [ListOfPrice, setListOfPrice] = useState([""]);
+    const [TotalAmount, setTotalAmount] = useState(0);
+    const [Discount, setDiscount] = useState(0);
+    const [DiscountAmt, setDiscountAmt] = useState(0);
+    const [Paymentmeth,setPaymentmeth]=useState();
+    const [PhNo,setPhNo]=useState();
+    const [TotalCount,setTotalCount]=useState();
+    const [StockData,setStockData]=useState([{}]);
+    const [FilteredItems, setFilteredItems] = useState([[]]);
+    const [ListOfSp,setListOfSp]=useState([])
+    const [ListOfMrp,setListOfMrp]=useState([])
+    
+    useEffect(() => {
+        const fetchStockData = async () => {
+            try {
+                const response = await Axios.get("https://jackpot-backend-r3dc.onrender.com/api/stocks"); 
+               setStockData(response.data.map(stock=>({Item:stock.Item,Price:stock.Sp,Mrp:stock.Mrp}))); 
+               
+            } catch (error) {
+                console.error("Error fetching stock data:", error);
+            }
+        };
+        fetchStockData();
+    }, []);
+
+    useEffect(() => {
+        if (editData) {
+            setPayeeName(editData.PayeeName);
+            setInvoiceDate(editData.date);
+            setPayment(editData.payment);
+            setAmountReceived(editData.AmountReceived || 0); // Handle cash amount
+            setInvoiceNumber(editData.invoiceNumber);
+            setListOfItem(editData.ListOfItem || [""]);
+            setListOfQty(editData.ListOfQty || [1]);
+            setListOfPrice(editData.ListOfPrice || [""]);
+            setDiscount(editData.Discount || 0);
+            setPaymentmeth(editData.Paymentmeth)
+            setTotalAmount(editData.TotalAmount || 0);
+            setDiscountAmt(editData.DiscountAmt || 0);
+            setPhNo(editData.PhNo)
+        } else {
+            setPayeeName("");
+            setInvoiceDate(new Date().toISOString().split('T')[0]);
+            setPayment();
+            setAmountReceived(0);
+            setInvoiceNumber("");
+            setListOfItem([""]);
+            setListOfQty([1]);
+            setListOfPrice([""]);
+            setDiscount(0);
+            setTotalAmount(0);
+            setDiscountAmt(0);
+            setPaymentmeth();
+            setPhNo("");
+            setListOfSp([])
+        }
+    }, [editData]);
+
+    useEffect(() => {
+        const calculatedTotal = ListOfQty.reduce(
+            (total, qty, index) => total + (parseInt(qty, 10) * parseFloat(ListOfPrice[index] || 0)),
+            0
+        );
+        const discountedTotal = calculatedTotal - (calculatedTotal * Discount / 100);
+        setTotalAmount(calculatedTotal);
+        setDiscountAmt(discountedTotal);
+        setTotalCount(calculatedTotal)
+    }, [ListOfQty, ListOfPrice, Discount]);
+
+    const handleAddItem = () => {
+        setListOfItem([...ListOfItem, ""]);
+        setListOfQty([...ListOfQty, 1]);
+        setListOfPrice([...ListOfPrice, ""]);
+        setListOfSp([...ListOfSp, ""]);
+        setListOfMrp([...ListOfMrp,""])
+    };
+
+    const handleChange = (index, field, value) => {
+        if (field === "item") {
+            const newItems = [...ListOfItem];
+            newItems[index] = value;
+            setListOfItem(newItems);
+        } else if (field === "qty") {
+            const newQty = [...ListOfQty];
+            newQty[index] = value;
+            setListOfQty(newQty);
+        } else if (field === "price") {
+            const newPrices = [...ListOfPrice];
+            newPrices[index] = value;
+            setListOfPrice(newPrices);
+        }
+    };
+
+    const handleSelect = (index, selectedItem) => {
+        const newItems = [...ListOfItem];
+        newItems[index] = selectedItem;
+        setListOfItem(newItems);
+        const selectedStockItem = StockData.find(stock => stock.Item === selectedItem);
+        if (selectedStockItem) {
+            const newPrices = [...ListOfPrice];
+            newPrices[index] = selectedStockItem.Price; 
+            setListOfPrice(newPrices);
+
+            const newMrpList = [...ListOfMrp]; // Store MRP
+            newMrpList[index] = selectedStockItem.Mrp; 
+            setListOfMrp(newMrpList);
+        }
+        const newFilteredItems = [...FilteredItems];
+        newFilteredItems[index] = [];
+        setFilteredItems(newFilteredItems);
+    };
+
+    const handleItemChange = (index, value) => {
+        const newItems = [...ListOfItem];
+        newItems[index] = value;
+        setListOfItem(newItems);
+        const filtered = StockData.filter(item => 
+            item.Item.toLowerCase().includes(value.toLowerCase())
+        ).map(item => item.Item); 
+        const newFilteredItems = [...FilteredItems];
+        newFilteredItems[index] = filtered;
+        setFilteredItems(newFilteredItems);
+    };
+
+    const reduce=(item,qty)=>{
+        item.map(async (it,index)=>{
+            // console.log(item[index]+"=>"+qty[index])
+            try{
+                const response=await axios.post("https://jackpot-backend-r3dc.onrender.com/api/invoicestock",{
+                    Item:item[index],Qty:qty[index]
+                })
+                console.log(response.data)
+            }catch(error){
+                console.log(error)
+            }
+        })
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            reduce(ListOfItem,ListOfQty)
+            const newInvoiceData = {
+                PayeeName,
+                date: invoiceDate,
+                payment: Payment,
+                AmountReceived: Paymentmeth === "cash" ? AmountReceived : null,
+                invoiceNumber: InvoiceNumber,
+                Discount,
+                DiscountAmt,
+                Paymentmeth,
+                PhNo,
+                ListOfItem,
+                ListOfQty: ListOfQty.map(qty => parseInt(qty, 10)),
+                ListOfPrice: ListOfPrice.map(price => parseFloat(price, 10)),
+                ListOfMrp,
+                TotalAmount
+            };
+            console.log(newInvoiceData)
+            if (editData) {
+                await Axios.put(`https://jackpot-backend-r3dc.onrender.com/api/invoice/${editData._id}`, newInvoiceData);
+            } else {
+                await Axios.post("https://jackpot-backend-r3dc.onrender.com/api/invoice", newInvoiceData);
+            }
+            addInvoiceData();
+            close();
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
+    useEffect(() => {
+        const calculatedTotal = ListOfQty.reduce(
+            (total, qty, index) => total + (parseInt(qty, 10) * parseFloat(ListOfPrice[index] || 0)),
+            0
+        );
+        const discountedTotal = calculatedTotal - (calculatedTotal * Discount / 100);
+        setTotalAmount(calculatedTotal);
+        setDiscountAmt(discountedTotal);
+        setTotalCount(calculatedTotal);
+    }, [ListOfQty, ListOfPrice, Discount]);
+    
+    const calculateBalance = () => {
+        return AmountReceived - DiscountAmt > 0 ? AmountReceived - DiscountAmt : 0;
+    };
+    
+    return (
+        <div className="modal">
+            <div className="form">
+                <div className='close' onClick={close}>&times;</div>
+                <div className="title">{editData ? "Edit Invoice" : "Add Invoice"}</div>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label>Payee Name:</label>
+                        <input
+                            type="text"
+                            value={PayeeName}
+                            onChange={(e) => setPayeeName(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label>Phone Number</label>
+                        <input
+                            type="number"
+                            value={PhNo||""}
+                            onChange={(e) => setPhNo(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label>Date:</label>
+                        <input
+                            type="date"
+                            value={invoiceDate}
+                            onChange={(e) => setInvoiceDate(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label>Discount (%):</label>
+                        <input 
+                            type="number" 
+                            value={Discount} 
+                            onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)} 
+                        />
+                    </div>
+                    <div>
+                        <label>Payment Method:</label>
+                        <div>
+                            <label>
+                                <input 
+                                    type="radio" 
+                                    value="online" 
+                                    checked={Paymentmeth === "online"} 
+                                    onChange={() => setPaymentmeth("online")}
+                                /> 
+                                Online
+                            </label>
+                            <label>
+                                <input 
+                                    type="radio" 
+                                    value="cash" 
+                                    checked={Paymentmeth === "cash"} 
+                                    onChange={() => setPaymentmeth("cash")}
+                                /> 
+                                Cash
+                            </label>
+                        </div>
+                    </div>
+
+                    {Paymentmeth === "cash" && (
+                        <>
+                            <div>
+                                <label>Amount Received:</label>
+                                <input
+                                    type="number"
+                                    value={AmountReceived}
+                                    onChange={(e) => setAmountReceived(parseFloat(e.target.value) || 0)}
+                                />
+                            </div>
+                        </>
+                    )}
+
+                    {ListOfItem.length > 0 && (
+                        <div className="items-container">
+                            {ListOfItem.map((item, index) => (
+                                <div key={index}>
+                                    <label>Item {index + 1}:</label>
+                                    <input
+                                        type="text"
+                                        value={ListOfItem[index]}
+                                        onChange={(e) => handleItemChange(index, e.target.value)}
+                                    />
+                                    {FilteredItems[index] && FilteredItems[index].length > 0 && (
+                                        <ul className="dropdown">
+                                            {FilteredItems[index].map((filteredItem, itemIndex) => (
+                                                <li key={itemIndex} onClick={() => handleSelect(index, filteredItem)}>
+                                                    {filteredItem}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                    <label>Quantity {index + 1}:</label>
+                                    <input
+                                        type="number"
+                                        value={ListOfQty[index]}
+                                        onChange={(e) => handleChange(index, "qty", e.target.value)}
+                                    />
+                                    <label>Price {index + 1}:</label>
+                                    <input
+                                        type="number"
+                                        value={ListOfPrice[index]}
+                                        onChange={(e) => handleChange(index, "price", e.target.value)}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    <button type="button" onClick={handleAddItem}>Add More Items</button>
+                    <div>Total Amount: {TotalAmount}</div>
+                    <div>Discounted Amount: {DiscountAmt}</div>
+                    {(Paymentmeth==="cash")&&(
+                        <label>Balance to Return:{calculateBalance()}</label>
+                    )}
+                    <div className="footer">
+                        <button type="submit">Submit</button>
+                        <button type="button" onClick={close}>Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default AddData;
