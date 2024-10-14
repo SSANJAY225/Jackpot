@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Axios from 'axios';
 import StockTableData from './StockTableData.jsx';
 import './Stock.css'; 
+import { useNavigate } from "react-router-dom";
 
 const Stock = () => {
     const [StockApi, setStockApi] = useState([]);
@@ -16,7 +17,7 @@ const Stock = () => {
     const [newDate, setNewDate] = useState(''); // Stores the new date
     const [isEditMode, setIsEditMode] = useState(false); // Flag for edit mode
     const [editStockId, setEditStockId] = useState(''); // Stores the ID of the stock being edited
-
+    const navigate=useNavigate()
     const [fromDate, setFromDate] = useState(''); // Stores the "From" date filter
     const [toDate, setToDate] = useState(''); // Stores the "To" date filter
 
@@ -25,8 +26,14 @@ const Stock = () => {
     }, []);
 
     const fetchStockData = () => {
-        Axios.get('https://jackpot-backend-r3dc.onrender.com/api/stocks')
-            .then((res) => setStockApi(res.data))
+        Axios.get('https://jackpot-backend-r3dc.onrender.com/api/stocks',{withCredentials:true})
+            .then((res) => {
+                
+                if(res.data=='Not authenticated')
+                    navigate('/notauth')
+                else
+                    setStockApi(res.data)
+            })
             .catch((error) => console.error("Error fetching data:", error));
     };
 
@@ -55,7 +62,7 @@ const Stock = () => {
             Date: newDate,
         };
 
-        Axios.post(' https://jackpot-backend-r3dc.onrender.com/api/AddStock', newStock)
+        Axios.post(' https://jackpot-backend-r3dc.onrender.com/api/AddStock', newStock,{withCredentials:true})
             .then((res) => {
                 fetchStockData(); // Refresh the stock data after adding
                 setShowModal(false); // Close the modal after submission
@@ -86,7 +93,7 @@ const Stock = () => {
             Date: newDate,
         };
 
-        Axios.put(` https://jackpot-backend-r3dc.onrender.com/api/stocks/${editStockId}`, updatedStock)
+        Axios.put(` https://jackpot-backend-r3dc.onrender.com/api/stocks/${editStockId}`,{withCredentials:true}, updatedStock)
             .then((res) => {
                 fetchStockData(); // Refresh the stock data after updating
                 setShowModal(false); // Close the modal after submission

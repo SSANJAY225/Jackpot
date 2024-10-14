@@ -5,7 +5,8 @@ import { DropDownList } from "@progress/kendo-react-dropdowns";
 import { filterBy } from "@progress/kendo-data-query";
 import axios from "axios";
 
-const AddData = ({ close, addInvoiceData, editData }) => {
+const 
+AddData = ({ close, addInvoiceData, editData }) => {
     const [PayeeName, setPayeeName] = useState("");
     const [invoiceDate, setInvoiceDate] = useState("");
     const [Amount, setAmount] = useState(0);
@@ -29,8 +30,8 @@ const AddData = ({ close, addInvoiceData, editData }) => {
     useEffect(() => {
         const fetchStockData = async () => {
             try {
-                const response = await Axios.get("https://jackpot-backend-r3dc.onrender.com/api/stocks"); 
-               setStockData(response.data.map(stock=>({Item:stock.Item,Price:stock.Sp,Mrp:stock.Mrp}))); 
+                const response = await Axios.get("https://jackpot-backend-r3dc.onrender.com/api/stocks",{withCredentials:true}); 
+                setStockData(response.data.map(stock=>({Item:stock.Item,Price:stock.Sp,Mrp:stock.Mrp}))); 
                
             } catch (error) {
                 console.error("Error fetching stock data:", error);
@@ -142,7 +143,7 @@ const AddData = ({ close, addInvoiceData, editData }) => {
         item.map(async (it,index)=>{
             // console.log(item[index]+"=>"+qty[index])
             try{
-                const response=await axios.post("https://jackpot-backend-r3dc.onrender.com/api/invoicestock",{
+                const response=await axios.post("https://jackpot-backend-r3dc.onrender.com/api/invoicestock",{withCredentials:true},{
                     Item:item[index],Qty:qty[index]
                 })
                 console.log(response.data)
@@ -174,9 +175,9 @@ const AddData = ({ close, addInvoiceData, editData }) => {
             };
             console.log(newInvoiceData)
             if (editData) {
-                await Axios.put(`https://jackpot-backend-r3dc.onrender.com/api/invoice/${editData._id}`, newInvoiceData);
+                await Axios.put(`https://jackpot-backend-r3dc.onrender.com/api/invoice/${editData._id}`, newInvoiceData,{ withCredentials: true });
             } else {
-                await Axios.post("https://jackpot-backend-r3dc.onrender.com/api/invoice", newInvoiceData);
+                await Axios.post("https://jackpot-backend-r3dc.onrender.com/api/invoice", newInvoiceData,{ withCredentials: true });
             }
             addInvoiceData();
             close();

@@ -3,7 +3,9 @@ import Axios from 'axios';
 import TableData from './TableData';
 import Nav from './Nav.jsx';
 import AddData from './AddData';
+import Cookies from 'js-cookie';
 import './Invoice.css'; 
+import { useNavigate } from "react-router-dom";
 
 const Invoice = () => {
     const [ApiData, setApiData] = useState([]);
@@ -14,28 +16,34 @@ const Invoice = () => {
     const [toDate, setToDate] = useState(''); // State for "to" date
     const [totalDiscountAmount, setTotalDiscountAmount] = useState(0); // Initialize to 0
     const [totalOverall, setTotalOverall] = useState(0);
-    const [ItemPerPage, setItemPerPage] = useState(10); // Default to 5 items per page
-    const [currentPage, setCurrentPage] = useState(1); // Track the current page
+    const [ItemPerPage, setItemPerPage] = useState(10); 
+    const [currentPage, setCurrentPage] = useState(1);
     const [profit,setprofit]=useState(0)
-
+    const navigate=useNavigate()
     useEffect(() => {
-        Axios.get('https://jackpot-backend-r3dc.onrender.com/api/invoices')
-            .then((res) => setApiData(res.data))
+        console.log('Session ID:', Cookies.get('sessionId'));
+        Axios.get('http://localhost:5000/api/invoices',{withCredentials:true})
+            .then((res) => {
+                console.log("res=>",res)
+                // if(res.data=="Not authenticated")
+                    // navigate('/notauth')
+                // else
+                setApiData(res.data);
+            })
             .catch((error) => console.error("Error fetching data:", error));
     }, []);
 
     const handleEdit = (invoice) => {
-        setEditData(invoice); // Set the invoice data for editing
-        setShow(true); // Open the modal
+        setEditData(invoice); 
+        setShow(true); 
     };
 
     const addInvoiceData = () => {
-        Axios.get(' https://jackpot-backend-r3dc.onrender.com/api/invoices')
+        Axios.get('http://localhost:5000/api/invoices',{ withCredentials: true })
             .then((res) => setApiData(res.data))
             .catch((error) => console.error("Error fetching data:", error));
     };
 
-    
     const calculateProfitWithDiscount = (invoices) => {
         console.log(invoices)
         for(var i=0;i<invoices.length;i++){
@@ -59,10 +67,11 @@ const Invoice = () => {
         return true;
     };
 
-    const filteredInvoices = ApiData.filter(invoice => 
+    const filteredInvoices = Array.isArray(ApiData) 
+    ? ApiData.filter(invoice => 
         (invoice.invoiceNumber && invoice.invoiceNumber.toString().includes(searchTerm)) &&
         (isWithinDateRange(invoice.date))
-    );
+    ):[]
 
     useEffect(() => {
         const total = filteredInvoices.reduce((total, invoice) => {
@@ -204,8 +213,6 @@ const Invoice = () => {
                     )}
                 </tbody>
             </table>        
-
-            {/* Pagination Controls */}
             <div style={{ marginTop: '20px' }}>
                 <button onClick={handlePreviousPage} disabled={currentPage === 1}>
                     Previous

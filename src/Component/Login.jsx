@@ -11,14 +11,20 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        Axios.post("https://jackpot-backend-r3dc.onrender.com/api/login", { Email, Password })
+        Axios.post("http://localhost:5000/api/login", { Email, Password },{withCredentials:true})
             .then((response) => {
                 setEmail(Email);
+                console.log(response)
                 navigate('/invoice');
             })
             .catch((error) => {
-                console.log(error.response.data.error);
-                setMessage('Error logging in.'+" "+error.response.data.error);
+                if (error.response && error.response.data && error.response.data.error) {
+                    console.log(error.response.data.error);
+                    setMessage('Error logging in.' + " " + error.response.data.error);
+                } else {
+                    console.log("err=>",error.message);
+                    setMessage('An unexpected error occurred. Please try again.');
+                }
             });
     };
 

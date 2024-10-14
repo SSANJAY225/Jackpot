@@ -19,7 +19,8 @@ const ChangePass = () => {
 
         try {
             // Send the request to the backend API
-            const response = await fetch('https://jackpot-backend-r3dc.onrender.com/api/change-password', {
+            const response = await fetch('https://jackpot-backend-r3dc.onrender.com/api/change-password',{withCredentials:true}
+            , {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
